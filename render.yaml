@@ -27,4 +27,4 @@ services:
     pullRequestPreviewsEnabled: true
     envVars:
       - key: VITE_API_URL
-        value: https://cash-management-api.onrender.com/api
+        value: https://cashmanegment-4.onrender.com/api
