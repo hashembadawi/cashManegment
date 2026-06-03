@@ -109,7 +109,11 @@ function App() {
       setActiveView('boxes')
       setLoginForm({ username: '', password: '' })
     } catch (err) {
-      setError('بيانات الدخول غير صحيحة.')
+      if (String(err.message).toLowerCase().includes('invalid username or password')) {
+        setError('بيانات الدخول غير صحيحة.')
+      } else {
+        setError(`تعذر تسجيل الدخول: ${err.message}`)
+      }
     } finally {
       setBusy(false)
     }

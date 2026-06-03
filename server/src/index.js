@@ -25,16 +25,33 @@ if (!JWT_SECRET) {
   process.exit(1);
 }
 
-const allowedOrigins = [
+const configuredOrigins = [
   process.env.FRONTEND_URL,
+  ...(process.env.FRONTEND_URLS || '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean),
+];
+
+const allowedOrigins = [
+  ...configuredOrigins,
   'http://localhost:5173',
   'http://127.0.0.1:5173',
-].filter(Boolean);
+];
+
+function isRenderOrigin(origin) {
+  try {
+    const hostname = new URL(origin).hostname;
+    return hostname.endsWith('.onrender.com');
+  } catch {
+    return false;
+  }
+}
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || isRenderOrigin(origin)) {
         return callback(null, true);
       }
       return callback(new Error('Not allowed by CORS'));
