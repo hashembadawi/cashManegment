@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: cash-management-api
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        value: https://cash-management-client.onrender.com
+
+  - type: static
+    name: cash-management-client
+    rootDir: client
+    buildCommand: npm install; npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: VITE_API_URL
+        value: https://cash-management-api.onrender.com/api
