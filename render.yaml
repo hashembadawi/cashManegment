@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: cash-management-api
+    name: cashmanegment-api
     env: node
     rootDir: server
     buildCommand: npm install
@@ -16,10 +16,10 @@ services:
       - key: ADMIN_PASSWORD
         sync: false
       - key: FRONTEND_URL
-        value: https://cash-management-client.onrender.com
+        value: https://cashmanegment-client1.onrender.com
 
   - type: web
-    name: cash-management-client
+    name: cashmanegment-client1
     env: static
     rootDir: client
     buildCommand: npm install; npm run build
@@ -27,4 +27,4 @@ services:
     pullRequestPreviewsEnabled: true
     envVars:
       - key: VITE_API_URL
-        value: https://cashmanegment-4.onrender.com/api
+        value: https://cashmanegment-api.onrender.com/api
