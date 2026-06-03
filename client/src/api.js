@@ -30,18 +30,41 @@ async function request(path, options = {}) {
     ...options,
   });
 
+  const contentType = response.headers.get('content-type') || '';
+  const rawBody = await response.text();
+
+  let payload = null;
+  if (rawBody) {
+    if (contentType.includes('application/json')) {
+      try {
+        payload = JSON.parse(rawBody);
+      } catch {
+        payload = null;
+      }
+    } else {
+      payload = rawBody;
+    }
+  }
+
   if (!response.ok) {
     let message = 'Unexpected server error.';
-    try {
-      const payload = await response.json();
-      message = payload.message || message;
-    } catch {
-      message = 'Unexpected server error.';
+    if (payload && typeof payload === 'object' && payload.message) {
+      message = payload.message;
+    } else if (typeof payload === 'string' && payload.trim()) {
+      message = payload.slice(0, 180);
     }
     throw new Error(message);
   }
 
-  return response.json();
+  if (!rawBody) {
+    return {};
+  }
+
+  if (payload && typeof payload === 'object') {
+    return payload;
+  }
+
+  throw new Error('Server returned a non-JSON response. Check VITE_API_URL and backend health.');
 }
 
 export const api = {
